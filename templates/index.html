@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Simulador PLC Web</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; margin-top: 50px; }
+    button { margin: 10px; padding: 10px 20px; }
+    .led { width: 40px; height: 40px; border-radius: 50%; margin: 20px auto; }
+    .on { background: limegreen; box-shadow: 0 0 20px lime; }
+    .off { background: gray; }
+  </style>
+</head>
+<body>
+  <h1>🔧 Simulador de PLC Web</h1>
+
+  <div>
+    <button onclick="sendCommand('start')">Start</button>
+    <button onclick="sendCommand('stop')">Stop</button>
+  </div>
+
+  <div id="led" class="led off"></div>
+  <h3>Motor</h3>
+
+  <script>
+    async function sendCommand(cmd) {
+      const data = { start: cmd === 'start', stop: cmd === 'stop' };
+      const response = await fetch("/update", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      });
+      const res = await response.json();
+      document.getElementById("led").className = "led " + (res.motor ? "on" : "off");
+    }
+  </script>
+</body>
+</html>
